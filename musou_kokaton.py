@@ -136,7 +136,7 @@ class Bomb(pg.sprite.Sprite):
         爆弾を速度ベクトルself.vx, self.vyに基づき移動させる
         引数 screen：画面Surface
         """
-        
+
         self.rect.move_ip(+self.speed*self.vx, +self.speed*self.vy)
         if check_bound(self.rect) != (True, True):
             self.kill()
@@ -227,6 +227,7 @@ class Enemy(pg.sprite.Sprite):
             self.state = "stop"
         self.rect.centery += self.vy
 
+
 class NeoGravity(pg.sprite.Sprite):
     def __init__(self, life):
         super().__init__()
@@ -263,11 +264,34 @@ class Score:
         screen.blit(self.image, self.rect)
 
 
+
+class Gravity(pg.sprite.Sprite):
+    def __init__(self, bird: Bird, size: int, life: int):
+        super().__init__()
+        self.image = pg.Surface((2 * size, 2 * size))
+        pg.draw.circle(self.image, (10, 10, 10), (size, size), size)
+        self.image.set_alpha(200)
+        self.image.set_colorkey((0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = bird.rect.center
+        self.life = life
+        self.vx, self.vy = bird.get_direction()
+
+    def update(self):
+        self.life -= 1
+        if self.life < 0:
+            self.kill()
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+
+
 def main():
     pg.display.set_caption("真！こうかとん無双")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("ex04/fig/pg_bg.jpg")
     score = Score()
+
     bird = Bird(3, (900, 400))
     bombs = pg.sprite.Group()
     beams = pg.sprite.Group()
@@ -277,6 +301,13 @@ def main():
 
     tmr = 0
     clock = pg.time.Clock()
+
+    gravity = pg.sprite.Group()
+
+    tmr = 0
+    clock = pg.time.Clock()
+    gravity_active = False
+    gravity_duration = 500
     while True:
         key_lst = pg.key.get_pressed()
         for event in pg.event.get():
@@ -290,6 +321,25 @@ def main():
                     score.score_up(-200)
         screen.blit(bg_img, [0, 0])
 
+            if event.type == pg.KEYDOWN and event.key == pg.K_TAB and score.score >= 50:
+                gravity = Gravity(bird, 200, gravity_duration)
+                gravity_active = True
+                score.score_up(-50)
+
+
+        screen.blit(bg_img, [0, 0])
+
+        # 重力球と爆弾の衝突判定
+        if gravity:
+            for bomb in pg.sprite.spritecollide(gravity, bombs, True):
+                exps.add(Explosion(bomb, 50))  # 爆発エフェクト
+                score.score_up(1)  # 1点アップ
+
+        if gravity_active:
+            gravity_duration -= 1
+            if gravity_duration < 0:
+                gravity.kill()
+                gravity_active = False
 
         if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
             emys.add(Enemy())
@@ -313,12 +363,17 @@ def main():
             score.score_up(1)
 
 
+
         if len(pg.sprite.spritecollide(bird, bombs, True)) != 0:
             bird.change_img(8, screen) # こうかとん悲しみエフェクト
             score.update(screen)
             pg.display.update()
             time.sleep(2)
             return
+
+
+        gravity.update()
+        gravity.draw(screen)
 
         bird.update(key_lst, screen)
         beams.update()
@@ -331,6 +386,7 @@ def main():
         exps.draw(screen)
         gravity_group.update()   
         gravity_group.draw(screen)
+
         score.update(screen)
         pg.display.update()
         tmr += 1
