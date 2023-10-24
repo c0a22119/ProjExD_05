@@ -319,12 +319,12 @@ def main():
                 if score.score > 200:
                     gravity_group.add(NeoGravity(400))
                     score.score_up(-200)
-        screen.blit(bg_img, [0, 0])
-
             if event.type == pg.KEYDOWN and event.key == pg.K_TAB and score.score >= 50:
                 gravity = Gravity(bird, 200, gravity_duration)
                 gravity_active = True
                 score.score_up(-50)
+        screen.blit(bg_img, [0, 0])
+
 
 
         screen.blit(bg_img, [0, 0])
