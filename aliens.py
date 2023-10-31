@@ -35,7 +35,7 @@ if not pg.image.get_extended():
 
 
 # game constants
-MAX_SHOTS = 2  # most player bullets onscreen
+MAX_SHOTS = 10  # most player bullets onscreen
 ALIEN_ODDS = 22  # chances a new alien appears
 BOMB_ODDS = 60  # chances a new bomb will drop
 ALIEN_RELOAD = 12  # frames between new aliens
@@ -331,6 +331,24 @@ def main(winstyle=0):
                     fullscreen = not fullscreen
 
         keystate = pg.key.get_pressed()
+
+        if keystate[pg.K_TAB]:
+            # shots(player, 0) を shots.add() に変更
+            new_shot = Shot(player.gunpos())
+            shots.add(new_shot)
+
+            # shots(player, 45) を shots.add() に変更
+            new_shot = Shot(player.gunpos())
+            new_shot.rect.x -= 15  # 左に11ピクセル移動
+            new_shot.rect.y -= 1  # 上に1ピクセル移動
+            shots.add(new_shot)
+
+            # shots(player, -45) を shots.add() に変更
+            new_shot = Shot(player.gunpos())
+            new_shot.rect.x += 15  # 右に11ピクセル移動
+            new_shot.rect.y -= 1  # 上に1ピクセル移動
+            shots.add(new_shot)
+
 
         # clear/erase the last drawn sprites
         all.clear(screen, background)
