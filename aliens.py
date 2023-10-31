@@ -339,13 +339,13 @@ def main(winstyle=0):
 
             # shots(player, 45) を shots.add() に変更
             new_shot = Shot(player.gunpos())
-            new_shot.rect.x -= 15  # 左に11ピクセル移動
+            new_shot.rect.x -= 15  # 左に15ピクセル移動
             new_shot.rect.y -= 1  # 上に1ピクセル移動
             shots.add(new_shot)
 
             # shots(player, -45) を shots.add() に変更
             new_shot = Shot(player.gunpos())
-            new_shot.rect.x += 15  # 右に11ピクセル移動
+            new_shot.rect.x += 15  # 右に15ピクセル移動
             new_shot.rect.y -= 1  # 上に1ピクセル移動
             shots.add(new_shot)
 
