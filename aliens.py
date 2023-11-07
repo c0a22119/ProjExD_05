@@ -111,10 +111,12 @@ class Alien(pg.sprite.Sprite):
 
     speed = 13
     animcycle = 12
+    images = []
 
     def __init__(self):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.transform.rotozoom(pg.image.load("ex05/data/alien1.gif"), 0.0, 1.0)
+        pg.sprite.Sprite.__init__(self, self.containers)
+        self.image = self.images[0]
+        #self.image = pg.transform.rotozoom(pg.image.load("ex05/data/alien1.gif"), 0.0, 1.0)
         self.rect = self.image.get_rect()
         self.facing = random.choice((-1, 1)) * Alien.speed
         self.frame = 0
@@ -136,10 +138,12 @@ class Explosion(pg.sprite.Sprite):
 
     defaultlife = 12
     animcycle = 3
+    images = []
 
     def __init__(self, actor):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.transform.rotozoom(pg.image.load("ex05/data/explosion1.gif"), 0.0, 1.0)
+        pg.sprite.Sprite.__init__(self, self.containers)
+        self.image = self.images[0]
+        #self.image = pg.transform.rotozoom(pg.image.load("ex05/data/explosion1.gif"), 0.0, 1.0)
         self.rect = self.image.get_rect(center=actor.rect.center)
         self.life = self.defaultlife
 
@@ -161,10 +165,12 @@ class Shot(pg.sprite.Sprite):
     """a bullet the Player sprite fires."""
 
     speed = -11
+    images = []
 
     def __init__(self, pos):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.transform.rotozoom(pg.image.load("ex05/data/shot.gif"), 0.0, 1.0)
+        pg.sprite.Sprite.__init__(self, self.containers)
+        self.image = self.images[0]
+        #self.image = pg.transform.rotozoom(pg.image.load("ex05/data/shot.gif"), 0.0, 1.0)
         self.rect = self.image.get_rect(midbottom=pos)
 
     def update(self):
@@ -181,10 +187,12 @@ class Bomb(pg.sprite.Sprite):
     """A bomb the aliens drop."""
 
     speed = 9
+    images = []
 
     def __init__(self, alien):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.transform.rotozoom(pg.image.load("ex05/data/bomb.gif"), 0.0, 1.0)
+        pg.sprite.Sprite.__init__(self, self.containers)
+        self.image = self.images[0]
+        #self.image = pg.transform.rotozoom(pg.image.load("ex05/data/bomb.gif"), 0.0, 1.0)
         self.rect = self.image.get_rect(midbottom=alien.rect.move(0, 5).midbottom)
 
     def update(self):
@@ -222,63 +230,65 @@ class Score(pg.sprite.Sprite):
             self.image = self.font.render(msg, 0, self.color)
 
 
-def main(winstyle=0):
-    # Initialize pygame
-    if pg.get_sdl_version()[0] == 2:
-        pg.mixer.pre_init(44100, 32, 2, 1024)
-    pg.init()
-    if pg.mixer and not pg.mixer.get_init():
-        print("Warning, no sound")
-        pg.mixer = None
+# def main(winstyle=0):
+#     # Initialize pygame
+#     if pg.get_sdl_version()[0] == 2:
+#         pg.mixer.pre_init(44100, 32, 2, 1024)
+#     pg.init()
+#     if pg.mixer and not pg.mixer.get_init():
+#         print("Warning, no sound")
+#         pg.mixer = None
 
-    fullscreen = False
-    # Set the display mode
-    winstyle = 0  # |FULLSCREEN
-    bestdepth = pg.display.mode_ok(SCREENRECT.size, winstyle, 32)
-    screen = pg.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
+#     fullscreen = False
+#     # Set the display mode
+#     winstyle = 0  # |FULLSCREEN
+#     bestdepth = pg.display.mode_ok(SCREENRECT.size, winstyle, 32)
+#     screen = pg.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
 
-    # Load images, assign to sprite classes
-    # (do this before the classes are used, after screen setup)
-    img = load_image("player1.gif")
-    Player.images = [img, pg.transform.flip(img, 1, 0)]
-    img = load_image("explosion1.gif")
-    Explosion.images = [img, pg.transform.flip(img, 1, 1)]
-    Alien.images = [load_image(im) for im in ("alien1.gif", "alien2.gif", "alien3.gif")]
-    Bomb.images = [load_image("bomb.gif")]
-    Shot.images = [load_image("shot.gif")]
-    Firework.images = [load_image("hanabi.png")]
+#     # Load images, assign to sprite classes
+#     # (do this before the classes are used, after screen setup)
+#     img = load_image("player1.gif")
+#     Player.images = [img, pg.transform.flip(img, 1, 0)]
+#     img = load_image("explosion1.gif")
+#     Explosion.images = [img, pg.transform.flip(img, 1, 1)]
+#     Alien.images = [load_image(im) for im in ("alien1.gif", "alien2.gif", "alien3.gif")]
+#     Bomb.images = [load_image("bomb.gif")]
+#     Shot.images = [load_image("shot.gif")]
+#     Firework.images = [load_image("hanabi.png")]
 
-    # decorate the game window
-    icon = pg.transform.scale(Alien.images[0], (32, 32))
-    pg.display.set_icon(icon)
-    pg.display.set_caption("Pygame Aliens")
-    pg.mouse.set_visible(0)
+#     # decorate the game window
+#     icon = pg.transform.scale(Alien.images[0], (32, 32))
+#     pg.display.set_icon(icon)
+#     pg.display.set_caption("Pygame Aliens")
+#     pg.mouse.set_visible(0)
 
-    # create the background, tile the bgd image
-    bgdtile = load_image("background.gif")
-    background = pg.Surface(SCREENRECT.size)
-    for x in range(0, SCREENRECT.width, bgdtile.get_width()):
-        background.blit(bgdtile, (x, 0))
-    screen.blit(background, (0, 0))
-    pg.display.flip()
+#     # create the background, tile the bgd image
+#     bgdtile = load_image("background.gif")
+#     background = pg.Surface(SCREENRECT.size)
+#     for x in range(0, SCREENRECT.width, bgdtile.get_width()):
+#         background.blit(bgdtile, (x, 0))
+#     screen.blit(background, (0, 0))
+#     pg.display.flip()
 
-    # load the sound effects
-    boom_sound = load_sound("boom.wav")
-    shoot_sound = load_sound("car_door.wav")
-    if pg.mixer:
-        music = os.path.join(main_dir, "data", "house_lo.wav")
-        pg.mixer.music.load(music)
-        pg.mixer.music.play(-1)
+#     # load the sound effects
+#     boom_sound = load_sound("boom.wav")
+#     shoot_sound = load_sound("car_door.wav")
+#     if pg.mixer:
+#         music = os.path.join(main_dir, "data", "house_lo.wav")
+#         pg.mixer.music.load(music)
+#         pg.mixer.music.play(-1)
 
 class Firework(pg.sprite.Sprite):
     """Represents a firework that can be launched at random intervals."""
 
     speed = -10
+    images = []
 
     def __init__(self, pos):
-        pg.sprite.Sprite.__init__(self)
+        pg.sprite.Sprite.__init__(self, self.containers)
         if len(self.images) > 0:
-            self.image = pg.transform.rotozoom(pg.image.load("ex05/data/hanabi.png"), 0.0, 1.0)
+            self.image = self.images[0]
+             #self.image = pg.transform.rotozoom(pg.image.load("ex05/data/hanabi.png"), 0.0, 1.0)
             self.rect = self.image.get_rect(midbottom=pos)
 
     def update(self):
@@ -293,6 +303,8 @@ class Firework(pg.sprite.Sprite):
 
 def main(winstyle=0):
 
+    pg.init()
+
     # Initialize Game Groups
     aliens = pg.sprite.Group()
     shots = pg.sprite.Group()
@@ -300,16 +312,15 @@ def main(winstyle=0):
     all = pg.sprite.RenderUpdates()
     lastalien = pg.sprite.GroupSingle()
     fireworks = pg.sprite.Group()
-    pg.init()
 
     # assign default groups to each sprite class
     Player.containers = all
-    #Alien.containers = aliens, all, lastalien
-    #Shot.containers = shots, all
-    #Bomb.containers = bombs, all
-    #Explosion.containers = all
-    #Score.containers = all
-    #Firework.containners = fireworks, all
+    Alien.containers = aliens, all, lastalien
+    Shot.containers = shots, all
+    Bomb.containers = bombs, all
+    Explosion.containers = all
+    Score.containers = all
+    Firework.containers = fireworks, all
 
     # 画面の設定
     fullscreen = False
@@ -317,15 +328,23 @@ def main(winstyle=0):
     bestdepth = pg.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pg.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
 
+    # create the background, tile the bgd image
+    bgdtile = load_image("data/background.gif")
+    background = pg.Surface(SCREENRECT.size)
+    for x in range(0, SCREENRECT.width, bgdtile.get_width()):
+        background.blit(bgdtile, (x, 0))
+    screen.blit(background, (0, 0))
+    pg.display.flip()
+
     # 画像の読み込みとスプライトクラスへの割り当て
-    img = load_image("player1.gif")
+    img = load_image("data/player1.gif")
     Player.images = [img, pg.transform.flip(img, 1, 0)]
-    img = load_image("explosion1.gif")
+    img = load_image("data/explosion1.gif")
     Explosion.images = [img, pg.transform.flip(img, 1, 1)]
-    Alien.images = [load_image(im) for im in ("alien1.gif", "alien2.gif", "alien3.gif")]
-    Bomb.images = [load_image("bomb.gif")]
-    Shot.images = [load_image("shot.gif")]
-    Firework.images = [load_image("hanabi.png")]
+    Alien.images = [load_image(im) for im in ("data/alien1.gif", "data/alien2.gif", "data/alien3.gif")]
+    Bomb.images = [load_image("data/bomb.gif")]
+    Shot.images = [load_image("data/shot.gif")]
+    Firework.images = [load_image("data/hanabi.png")]
 
     # Create Some Starting Values
     global score
@@ -397,7 +416,8 @@ def main(winstyle=0):
             Bomb(lastalien.sprite)
 
         # Create fireworks (追加)
-        if not int(random.random() * 200):
+        #if not int(random.random() * 200):
+        if not int(random.random() * ALIEN_ODDS):
             Firework((random.randint(0, SCREENRECT.width), SCREENRECT.bottom))
     
         # Detect collisions between aliens and players.
@@ -428,8 +448,8 @@ def main(winstyle=0):
         for alien in pg.sprite.groupcollide(aliens, fireworks, 1, 1).keys():
             # if pg.mixer:
             #     boom_sound.play()
-            Explosion(aliens)
-            Explosion(fireworks)
+            Explosion(alien)
+            #Explosion(fireworks)
             SCORE = SCORE + 1
 
         # draw the scene
