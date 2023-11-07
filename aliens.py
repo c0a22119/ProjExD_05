@@ -463,13 +463,13 @@ def main(winstyle=0):
             # if pg.mixer:
             #     boom_sound.play()
         # Detect collisions
-        if not player.invincible:  # Add this condition
-            for alien in pg.sprite.spritecollide(player, aliens, 1):
-                Bomb(alien)
-                Explosion(alien)
-                Explosion(player)
-                SCORE = SCORE + 1
-                player.kill()
+            if not player.invincible:  # Add this condition
+                for alien in pg.sprite.spritecollide(player, aliens, 1):
+                    Bomb(alien)
+                    Explosion(alien)
+                    Explosion(player)
+                    SCORE = SCORE + 1
+                    player.kill()
 
         for alien in pg.sprite.groupcollide(shots, aliens, 1, 1).keys():
             Bomb(alien)
@@ -527,6 +527,3 @@ def main(winstyle=0):
 if __name__ == "__main__":
     main()
     pg.quit()
-
-
-    
